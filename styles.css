@@ -25,8 +25,9 @@ html {
 
 body {
   margin: 0;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   font-family: "Space Grotesk", sans-serif;
   color: var(--text);
   background:
@@ -34,16 +35,17 @@ body {
     radial-gradient(circle at 86% 12%, #e4ebff 0%, transparent 40%),
     var(--bg);
   position: relative;
-  overflow-x: hidden;
-  display: grid;
-  place-items: center;
 }
 
 .app {
   width: min(860px, 100%);
+  height: 100vh;
+  height: 100dvh;
   margin: 0 auto;
   padding: max(14px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(26px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .hidden {
@@ -51,16 +53,16 @@ body {
 }
 
 .welcome {
-  min-height: calc(100vh - 28px);
-  min-height: calc(100dvh - 28px);
+  flex: 1;
+  min-height: 0;
   display: grid;
   place-items: center;
 }
 
 .welcome-card {
   width: min(380px, 100%);
-  min-height: 80vh;
-  min-height: 80dvh;
+  height: min(80dvh, 100%);
+  overflow-y: auto;
   border: 2px solid #bfc7dc;
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.88) 100%), url("pantilla_avis.png");
   background-size: cover;
@@ -185,6 +187,10 @@ body {
 }
 
 .qr-screen {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   animation: softIn 0.45s ease both;
 }
 
@@ -328,10 +334,6 @@ body {
 }
 
 @media (min-width: 680px) {
-  .welcome-card {
-    min-height: 540px;
-  }
-
   .people {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
