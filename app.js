@@ -23,14 +23,17 @@ const teamByCity = {
 
 const reviewUrlByCity = {
   QUITO: { type: "google", placeId: "ChIJt0NbCHSQ1ZERR-637wqodcE" },
-  GUAYAQUI: { type: "google", placeId: "ChIJeapt9SQYzZER-Y01p6dazp8" },
-  MANTA: { type: "google", placeId: "ChIJMxmMTw9tLZARRR8xAazdjEQ" },
-  CUENCA: { type: "google", placeId: "ChIJr7NqWgDnK5ARW9p6if_5CQk" }
+  GUAYAQUI: { type: "url", url: "https://www.google.com/search?hl=es-EC&gl=ec&q=Budget+Rent+a+Car+Ecuador+-+Garzota+Guayaquil,+Ciudadela+%22La+Garzota%22+-+Tercera+Etapa.+Manzana.+114+Av.+Isidro+Ayora+y,+Av.+de+las+Am%C3%A9ricas,+090112+Guayaquil&ludocid=4939566622142701381&lsig=AB86z5XPswN_2fo9aEj0b8-aJhfA#lrd=0x902d6d0f4f8c1933:0x448cddac01311f45,3" },
+  MANTA: { type: "url", url: "https://www.google.com/search?hl=es-EC&gl=ec&q=28W8%2BG9H+AVIS+BUDGET,+V%C3%ADa+Aeropuerto,+130204+Manta&ludocid=651326497050253915&lsig=AB86z5UpDPezWITjYQD6eI8D_STG#lrd=0x902be7005a6ab3af:0x909f9ff897ada5b,3" },
+  CUENCA: { type: "url", url: "https://www.google.com/search?hl=es-EC&gl=ec&q=Budget+Rent+a+Car+Ecuador+-+Aeropuerto+Cuenca,+La+Mar,+Av.+Espa%C3%B1a+y+Elia+Liut.+Oficina+40+y+41.+Aeropuerto+%22Mariscal,+010106+Cuenca&ludocid=11515240973344280057&lsig=AB86z5V5znExqQhwAq2u7Fa-Zvss#lrd=0x91cd1824f56daa79:0x9fce5aa7a7358df9,3" }
 };
 
-// Appends tracking params without producing an invalid URL when one already has a query string.
+// Appends tracking params before any #fragment so the link stays valid.
 function appendParams(url, params) {
-  return `${url}${url.includes("?") ? "&" : "?"}${params.toString()}`;
+  const hashIndex = url.indexOf("#");
+  const base = hashIndex === -1 ? url : url.slice(0, hashIndex);
+  const hash = hashIndex === -1 ? "" : url.slice(hashIndex);
+  return `${base}${base.includes("?") ? "&" : "?"}${params.toString()}${hash}`;
 }
 
 // Android intent link: opens the Google Maps app directly instead of a browser/login page.
