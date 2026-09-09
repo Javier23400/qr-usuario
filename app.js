@@ -232,7 +232,7 @@ function showLandingScreen(scanContext) {
   const greeting = document.getElementById("landing-greeting");
   const openBtn = document.getElementById("landing-open-btn");
 
-  greeting.textContent = scanContext.nombre ? `¡Hola, ${scanContext.nombre}!` : "¡Hola!";
+  greeting.textContent = scanContext.nombre ? `¡Hola, te saluda ${scanContext.nombre}!` : "¡Hola!";
   landingScreen.classList.remove("hidden");
 
   openBtn.addEventListener("click", () => {

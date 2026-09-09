@@ -163,6 +163,21 @@ body {
   backdrop-filter: blur(2px);
 }
 
+.landing-logo-text {
+  margin: 0;
+  font-family: "Archivo", sans-serif;
+  font-size: clamp(2rem, 9vw, 2.8rem);
+  line-height: 1.05;
+}
+
+.brand-avis {
+  color: #e6231e;
+}
+
+.brand-budget {
+  color: #1a3fbf;
+}
+
 .landing-logo {
   max-width: 160px;
   max-height: 90px;
