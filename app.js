@@ -61,6 +61,13 @@ function resolveReviewUrl(city, params) {
     : appendParams(cityReview.url, params);
 }
 
+// Los QR siempre apuntan a index.html (la página de escaneo), aunque se generen desde admin.html.
+function getLandingBaseUrl() {
+  const path = window.location.pathname;
+  const dir = path.slice(0, path.lastIndexOf("/") + 1);
+  return `${window.location.origin}${dir}index.html`;
+}
+
 function createPayload(name, city, index) {
   const personCode = `${normalizeCode(city).slice(0, 4)}-${String(index + 1).padStart(3, "0")}`;
   const params = new URLSearchParams({
@@ -68,8 +75,7 @@ function createPayload(name, city, index) {
     nombre: name,
     ciudad: city
   });
-  // El QR lleva a la propia página; ella redirige a Google Maps según la ciudad.
-  const landingUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+  const landingUrl = `${getLandingBaseUrl()}?${params.toString()}`;
 
   return {
     personCode,
@@ -228,8 +234,8 @@ function getScanContext() {
 }
 
 function showLandingScreen(scanContext) {
-  document.getElementById("welcome-screen").classList.add("hidden");
-  document.getElementById("qr-screen").classList.add("hidden");
+  document.getElementById("welcome-screen")?.classList.add("hidden");
+  document.getElementById("qr-screen")?.classList.add("hidden");
 
   const landingScreen = document.getElementById("landing-screen");
   const greeting = document.getElementById("landing-greeting");
@@ -251,11 +257,21 @@ function showLandingScreen(scanContext) {
   });
 }
 
+// Muestra un aviso cuando index.html se abre sin un enlace de usuario válido.
+function showInvalidLinkScreen() {
+  const invalidScreen = document.getElementById("invalid-link-screen");
+  if (invalidScreen) {
+    invalidScreen.classList.remove("hidden");
+  }
+}
+
 const scanContext = getScanContext();
 if (scanContext) {
   showLandingScreen(scanContext);
-} else {
+} else if (document.getElementById("welcome-screen")) {
   buildPage();
   bindWelcomeFlow();
   buildFeaturedQr();
+} else {
+  showInvalidLinkScreen();
 }
