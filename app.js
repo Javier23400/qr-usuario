@@ -22,10 +22,10 @@ const teamByCity = {
 };
 
 const reviewUrlByCity = {
-  QUITO: { type: "google", placeId: "ChIJt0NbCHSQ1ZERR-637wqodcE" },
-  GUAYAQUI: { type: "url", url: "https://www.google.com/search?hl=es-EC&gl=ec&q=Budget+Rent+a+Car+Ecuador+-+Garzota+Guayaquil,+Ciudadela+%22La+Garzota%22+-+Tercera+Etapa.+Manzana.+114+Av.+Isidro+Ayora+y,+Av.+de+las+Am%C3%A9ricas,+090112+Guayaquil&ludocid=4939566622142701381&lsig=AB86z5XPswN_2fo9aEj0b8-aJhfA#lrd=0x902d6d0f4f8c1933:0x448cddac01311f45,3" },
-  MANTA: { type: "url", url: "https://www.google.com/search?hl=es-EC&gl=ec&q=28W8%2BG9H+AVIS+BUDGET,+V%C3%ADa+Aeropuerto,+130204+Manta&ludocid=651326497050253915&lsig=AB86z5UpDPezWITjYQD6eI8D_STG#lrd=0x902be7005a6ab3af:0x909f9ff897ada5b,3" },
-  CUENCA: { type: "url", url: "https://www.google.com/search?hl=es-EC&gl=ec&q=Budget+Rent+a+Car+Ecuador+-+Aeropuerto+Cuenca,+La+Mar,+Av.+Espa%C3%B1a+y+Elia+Liut.+Oficina+40+y+41.+Aeropuerto+%22Mariscal,+010106+Cuenca&ludocid=11515240973344280057&lsig=AB86z5V5znExqQhwAq2u7Fa-Zvss#lrd=0x91cd1824f56daa79:0x9fce5aa7a7358df9,3" }
+  QUITO: "https://search.google.com/local/writereview?placeid=ChIJt0NbCHSQ1ZERR-637wqodcE",
+  GUAYAQUI: "https://search.google.com/local/writereview?placeid=ChIJMxmMTw9tLZARRR8xAazdjEQ",
+  MANTA: "https://search.google.com/local/writereview?placeid=ChIJr7NqWgDnK5ARW9p6if_5CQk",
+  CUENCA: "https://search.google.com/local/writereview?placeid=ChIJeapt9SQYzZER-Y01p6dazp8"
 };
 
 // Appends tracking params before any #fragment so the link stays valid.
@@ -34,13 +34,6 @@ function appendParams(url, params) {
   const base = hashIndex === -1 ? url : url.slice(0, hashIndex);
   const hash = hashIndex === -1 ? "" : url.slice(hashIndex);
   return `${base}${base.includes("?") ? "&" : "?"}${params.toString()}${hash}`;
-}
-
-// Android intent link: opens the Google Maps app directly instead of a browser/login page.
-function buildGoogleMapsAndroidIntent(placeId, params) {
-  const query = `placeid=${encodeURIComponent(placeId)}&${params.toString()}`;
-  const fallbackUrl = encodeURIComponent(appendParams(`https://search.google.com/local/writereview?placeid=${placeId}`, params));
-  return `intent://search/local/writereview?${query}#Intent;scheme=https;package=com.google.android.apps.maps;S.browser_fallback_url=${fallbackUrl};end`;
 }
 
 const FEATURED_QR_URL = "https://www.google.com/search?q=budget+ecuador#lrd=0x91d59074085b43b7:0xc175a80aefb7ee47,3,,,,";
@@ -55,10 +48,7 @@ function normalizeCode(text) {
 }
 
 function resolveReviewUrl(city, params) {
-  const cityReview = reviewUrlByCity[city];
-  return cityReview.type === "google"
-    ? buildGoogleMapsAndroidIntent(cityReview.placeId, params)
-    : appendParams(cityReview.url, params);
+  return appendParams(reviewUrlByCity[city], params);
 }
 
 // Los QR siempre apuntan a index.html (la página de escaneo), aunque se generen desde admin.html.
@@ -251,9 +241,6 @@ function showLandingScreen(scanContext) {
       ciudad: scanContext.ciudad
     });
     window.location.href = resolveReviewUrl(scanContext.ciudad, params);
-
-    // Cierra la pestaña propia tras enviar al usuario a Google Maps (funciona si el navegador lo permite).
-    setTimeout(() => window.close(), 600);
   });
 }
 
