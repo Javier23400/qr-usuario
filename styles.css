@@ -54,7 +54,10 @@ body {
   width: min(380px, 100%);
   min-height: 80vh;
   border: 2px solid #bfc7dc;
-  background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.88) 100%), url("pantilla_avis.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   box-shadow: var(--shadow);
   border-radius: 2px;
   padding: 26px 18px;
@@ -147,20 +150,11 @@ body {
   box-shadow: 3px 3px 0 rgba(39, 34, 70, 0.25);
 }
 
-.landing {
-  background-image: linear-gradient(180deg, rgba(6, 10, 34, 0.35) 0%, rgba(6, 10, 34, 0.65) 100%), url("pantilla_avis.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
 .landing-card {
   justify-content: center;
   align-items: center;
   text-align: center;
   gap: 18px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(2px);
 }
 
 .landing-logo-text {
