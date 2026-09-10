@@ -28,6 +28,19 @@ const reviewUrlByCity = {
   CUENCA: "https://search.google.com/local/writereview?placeid=ChIJeapt9SQYzZER-Y01p6dazp8"
 };
 
+// Reemplaza con la URL real del backend una vez desplegado (ver server/README).
+const BACKEND_URL = "https://TU-BACKEND.onrender.com";
+
+// Registra la apertura del QR en la base de datos. Nunca bloquea la experiencia del usuario si falla.
+function trackOpen(scanContext) {
+  fetch(`${BACKEND_URL}/api/track`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(scanContext)
+  }).catch(() => {});
+}
+
+
 // Appends tracking params before any #fragment so the link stays valid.
 function appendParams(url, params) {
   const hashIndex = url.indexOf("#");
@@ -224,6 +237,8 @@ function getScanContext() {
 }
 
 function showLandingScreen(scanContext) {
+  trackOpen(scanContext);
+
   document.getElementById("welcome-screen")?.classList.add("hidden");
   document.getElementById("qr-screen")?.classList.add("hidden");
 
