@@ -12,10 +12,18 @@ function showAdminArea() {
   document.getElementById("stats-screen").classList.add("hidden");
 }
 
+function showLoginScreen() {
+  document.getElementById("admin-login-screen").classList.remove("hidden");
+  document.getElementById("welcome-screen").classList.add("hidden");
+  document.getElementById("qr-screen").classList.add("hidden");
+  document.getElementById("stats-screen").classList.add("hidden");
+}
+
 function showAdminHome() {
   document.getElementById("welcome-screen").classList.remove("hidden");
   document.getElementById("qr-screen").classList.add("hidden");
   document.getElementById("stats-screen").classList.add("hidden");
+  document.getElementById("admin-login-screen").classList.add("hidden");
 }
 
 function bindAdminLogin() {
@@ -120,14 +128,14 @@ function bindNavigation() {
   document.getElementById("logout-btn").addEventListener("click", () => {
     sessionStorage.removeItem(TOKEN_KEY);
     document.getElementById("admin-login-form").reset();
-    document.getElementById("admin-login-screen").classList.remove("hidden");
-    showAdminHome();
+    showLoginScreen();
   });
 }
 
 if (getToken()) {
   showAdminArea();
 } else {
+  showLoginScreen();
   bindAdminLogin();
 }
 bindStatsButton();
