@@ -125,6 +125,16 @@ body {
   gap: 10px;
 }
 
+.admin-home-card {
+  justify-content: center;
+  gap: 24px;
+}
+
+.admin-home-card .welcome-title {
+  margin: 0;
+  text-align: center;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
