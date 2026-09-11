@@ -28,8 +28,7 @@ const reviewUrlByCity = {
   CUENCA: "https://search.google.com/local/writereview?placeid=ChIJeapt9SQYzZER-Y01p6dazp8"
 };
 
-// Reemplaza con la URL real del backend una vez desplegado (ver server/README).
-const BACKEND_URL = "https://TU-BACKEND.onrender.com";
+const BACKEND_URL = "https://qr-usuario.onrender.com";
 
 // Registra la apertura del QR en la base de datos. Nunca bloquea la experiencia del usuario si falla.
 function trackOpen(scanContext) {

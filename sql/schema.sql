@@ -1,4 +1,4 @@
-CREATE TABLE QrOpens (
+CREATE TABLE dbo.QrOpens (
   Id INT IDENTITY(1,1) PRIMARY KEY,
   Codigo VARCHAR(20) NOT NULL,
   Nombre NVARCHAR(200) NOT NULL,
@@ -7,4 +7,4 @@ CREATE TABLE QrOpens (
   UserAgent NVARCHAR(500) NULL
 );
 
-CREATE INDEX IX_QrOpens_Codigo_Date ON QrOpens (Codigo, OpenedAt);
+CREATE INDEX IX_QrOpens_Codigo_Date ON dbo.QrOpens (Codigo, OpenedAt);

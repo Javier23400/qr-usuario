@@ -1,5 +1,4 @@
-// Reemplaza con la URL real del backend una vez desplegado (ver server/README.md).
-const ADMIN_BACKEND_URL = "https://TU-BACKEND.onrender.com";
+const ADMIN_BACKEND_URL = "https://qr-usuario.onrender.com";
 const TOKEN_KEY = "avis_admin_token";
 
 function getToken() {
