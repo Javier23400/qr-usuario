@@ -43,6 +43,7 @@
         <div class="admin-nav">
           <button id="accept-btn" class="cta-btn" type="button">Ver usuarios</button>
           <button id="stats-btn" class="secondary-btn" type="button">Ver estadísticas</button>
+          <button id="logout-btn" class="secondary-btn" type="button">Cerrar sesión</button>
         </div>
       </div>
     </section>
@@ -52,6 +53,7 @@
         <p class="eyebrow">Formulario por QR</p>
         <h2>Usuarios habilitados</h2>
         <p class="subtitle">Escanea o descarga el QR de cada persona. Cada código incluye ciudad, nombre y enlace a encuesta.</p>
+        <button id="back-to-admin-btn" class="secondary-btn hero-action" type="button">Volver al inicio</button>
       </header>
 
       <section id="cities-container" class="cities"></section>
@@ -62,6 +64,10 @@
         <p class="eyebrow">Analítica</p>
         <h2>Aperturas de QR por usuario</h2>
         <p class="subtitle">Cada apertura del enlace personalizado queda registrada con fecha.</p>
+        <div class="hero-actions">
+          <button id="refresh-stats-btn" class="secondary-btn hero-action" type="button">Actualizar datos</button>
+          <button id="back-to-admin-from-stats-btn" class="secondary-btn hero-action" type="button">Volver al inicio</button>
+        </div>
       </header>
 
       <div id="stats-table-wrap" class="stats-table-wrap"></div>

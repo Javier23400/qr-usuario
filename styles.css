@@ -125,6 +125,18 @@ body {
   gap: 10px;
 }
 
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.hero-action {
+  width: auto;
+  color: #1c2550;
+}
+
 .stats-table-wrap {
   margin-top: 16px;
   overflow-x: auto;
