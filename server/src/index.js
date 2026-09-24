@@ -65,17 +65,59 @@ app.post("/api/track", async (req, res) => {
 
   try {
     const pool = await getPool();
+    const qrResult = await pool.request()
+      .input("codigo", sql.VarChar(50), String(codigo).slice(0, 50))
+      .query(`SELECT TOP 1 q.Id, q.UsuarioId, u.Nombre, u.Apellido, q.Ciudad
+              FROM dbo.QRs q
+              LEFT JOIN dbo.Usuarios u ON u.Id = q.UsuarioId
+              WHERE q.Codigo = @codigo`);
+
+    const qr = qrResult.recordset[0];
+
+    if (!qr) {
+      return res.status(404).json({ error: "QR no encontrado" });
+    }
+
     await pool.request()
-      .input("codigo", sql.VarChar(20), String(codigo).slice(0, 20))
-      .input("nombre", sql.NVarChar(200), String(nombre).slice(0, 200))
-      .input("ciudad", sql.VarChar(50), ciudadUpper)
+      .input("qrId", sql.Int, qr.Id)
       .input("userAgent", sql.NVarChar(500), String(req.get("user-agent") || "").slice(0, 500))
-      .query(`INSERT INTO dbo.QrOpens (Codigo, Nombre, Ciudad, UserAgent)
-              VALUES (@codigo, @nombre, @ciudad, @userAgent)`);
+      .input("ipCliente", sql.NVarChar(100), String(req.ip || "").slice(0, 100))
+      .query(`INSERT INTO dbo.Escaneos (QRId, UserAgent, IpCliente)
+              VALUES (@qrId, @userAgent, @ipCliente)`);
+
     res.status(204).end();
   } catch (err) {
     console.error("track error", err);
     res.status(500).json({ error: "No se pudo registrar" });
+  }
+});
+
+// Protegido: lista de usuarios con QR y total de escaneos.
+app.get("/api/admin/usuarios", requireAdmin, async (_req, res) => {
+  try {
+    const pool = await getPool();
+    const result = await pool.request().query(`
+      SELECT
+        u.Id,
+        u.Nombre,
+        u.Apellido,
+        u.Ciudad,
+        r.Nombre AS Rol,
+        q.Codigo,
+        q.Ciudad AS CiudadQR,
+        COUNT(e.Id) AS TotalEscaneos
+      FROM dbo.Usuarios u
+      INNER JOIN dbo.Roles r ON r.Id = u.RolId
+      LEFT JOIN dbo.QRs q ON q.UsuarioId = u.Id
+      LEFT JOIN dbo.Escaneos e ON e.QRId = q.Id
+      GROUP BY u.Id, u.Nombre, u.Apellido, u.Ciudad, r.Nombre, q.Codigo, q.Ciudad
+      ORDER BY u.Nombre, u.Apellido
+    `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("admin usuarios error", err);
+    res.status(500).json({ error: "No se pudo consultar usuarios" });
   }
 });
 
@@ -97,16 +139,78 @@ app.post("/api/login", async (req, res) => {
   res.json({ token: issueToken(username) });
 });
 
-// Protegido: solo con token de administrador valido.
+// Protegido: lista de usuarios con QR y total de escaneos.
+app.get("/api/admin/usuarios", requireAdmin, async (_req, res) => {
+  try {
+    const pool = await getPool();
+    const result = await pool.request().query(`
+      SELECT
+        u.Id,
+        u.Nombre,
+        u.Apellido,
+        u.Ciudad,
+        r.Nombre AS Rol,
+        q.Codigo,
+        q.Ciudad AS CiudadQR,
+        COUNT(e.Id) AS TotalEscaneos
+      FROM dbo.Usuarios u
+      INNER JOIN dbo.Roles r ON r.Id = u.RolId
+      LEFT JOIN dbo.QRs q ON q.UsuarioId = u.Id
+      LEFT JOIN dbo.Escaneos e ON e.QRId = q.Id
+      GROUP BY u.Id, u.Nombre, u.Apellido, u.Ciudad, r.Nombre, q.Codigo, q.Ciudad
+      ORDER BY u.Nombre, u.Apellido
+    `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("admin usuarios error", err);
+    res.status(500).json({ error: "No se pudo consultar usuarios" });
+  }
+});
+
+// Protegido: historial de cambios.
+app.get("/api/admin/auditoria", requireAdmin, async (_req, res) => {
+  try {
+    const pool = await getPool();
+    const result = await pool.request().query(`
+      SELECT
+        Tabla,
+        Accion,
+        UsuarioSistema,
+        FechaCambio,
+        RegistroId,
+        DatosAntes,
+        DatosDespues
+      FROM dbo.Auditoria
+      ORDER BY FechaCambio DESC
+    `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("admin auditoria error", err);
+    res.status(500).json({ error: "No se pudo consultar auditoria" });
+  }
+});
+
+// Protegido: resumen de aperturas por usuario y fecha.
 app.get("/api/stats", requireAdmin, async (_req, res) => {
   try {
     const pool = await getPool();
     const result = await pool.request().query(`
-      SELECT Codigo, Nombre, Ciudad, CAST(OpenedAt AS DATE) AS Dia, COUNT(*) AS Aperturas
-      FROM dbo.QrOpens
-      GROUP BY Codigo, Nombre, Ciudad, CAST(OpenedAt AS DATE)
+      SELECT
+        u.Nombre,
+        u.Apellido,
+        u.Ciudad,
+        q.Codigo,
+        CAST(e.FechaEscaneo AS DATE) AS Dia,
+        COUNT(*) AS Aperturas
+      FROM dbo.Escaneos e
+      INNER JOIN dbo.QRs q ON q.Id = e.QRId
+      INNER JOIN dbo.Usuarios u ON u.Id = q.UsuarioId
+      GROUP BY u.Nombre, u.Apellido, u.Ciudad, q.Codigo, CAST(e.FechaEscaneo AS DATE)
       ORDER BY Dia DESC, Aperturas DESC
     `);
+
     res.json(result.recordset);
   } catch (err) {
     console.error("stats error", err);

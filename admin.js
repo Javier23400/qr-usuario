@@ -58,11 +58,11 @@ function bindAdminLogin() {
 }
 
 // Construye la tabla con DOM y textContent (nunca innerHTML) para evitar inyectar HTML no confiable.
-function renderStatsTable(wrap, rows) {
+function renderGenericTable(wrap, headers, rows) {
   wrap.replaceChildren();
 
   if (!rows.length) {
-    wrap.textContent = "Aún no hay aperturas registradas.";
+    wrap.textContent = "Aún no hay información disponible.";
     return;
   }
 
@@ -71,7 +71,7 @@ function renderStatsTable(wrap, rows) {
 
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
-  ["Fecha", "Nombre", "Ciudad", "Código", "Aperturas"].forEach((label) => {
+  headers.forEach((label) => {
     const th = document.createElement("th");
     th.textContent = label;
     headRow.appendChild(th);
@@ -79,11 +79,11 @@ function renderStatsTable(wrap, rows) {
   thead.appendChild(headRow);
 
   const tbody = document.createElement("tbody");
-  rows.forEach((row) => {
+  rows.forEach((values) => {
     const tr = document.createElement("tr");
-    [row.Dia, row.Nombre, row.Ciudad, row.Codigo, row.Aperturas].forEach((value) => {
+    values.forEach((value) => {
       const td = document.createElement("td");
-      td.textContent = value;
+      td.textContent = value ?? "-";
       tr.appendChild(td);
     });
     tbody.appendChild(tr);
@@ -91,6 +91,31 @@ function renderStatsTable(wrap, rows) {
 
   table.append(thead, tbody);
   wrap.appendChild(table);
+}
+
+function renderStatsTable(wrap, rows) {
+  const normalizedRows = rows.map((row) => [
+    row.Dia || row.Fecha || "-",
+    row.Nombre || "-",
+    row.Ciudad || "-",
+    row.Codigo || "-",
+    row.Aperturas ?? row.TotalEscaneos ?? 0
+  ]);
+
+  renderGenericTable(wrap, ["Fecha", "Nombre", "Ciudad", "Código", "Aperturas"], normalizedRows);
+}
+
+function renderUsersTable(wrap, rows) {
+  const normalizedRows = rows.map((row) => [
+    row.Nombre || "-",
+    row.Apellido || "-",
+    row.Ciudad || "-",
+    row.Rol || "-",
+    row.Codigo || "-",
+    row.TotalEscaneos ?? row.Aperturas ?? 0
+  ]);
+
+  renderGenericTable(wrap, ["Nombre", "Apellido", "Ciudad", "Rol", "QR", "Escaneos"], normalizedRows);
 }
 
 async function loadStats() {
@@ -106,9 +131,30 @@ async function loadStats() {
       throw new Error("No autorizado");
     }
 
-    renderStatsTable(wrap, await response.json());
+    const rows = await response.json();
+    renderStatsTable(wrap, rows);
   } catch {
     wrap.textContent = "No se pudo cargar la información. Inicia sesión nuevamente.";
+  }
+}
+
+async function loadUsers() {
+  const wrap = document.getElementById("stats-table-wrap");
+  wrap.textContent = "Cargando...";
+
+  try {
+    const response = await fetch(`${ADMIN_BACKEND_URL}/api/admin/usuarios`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+
+    if (!response.ok) {
+      throw new Error("No autorizado");
+    }
+
+    const rows = await response.json();
+    renderUsersTable(wrap, rows);
+  } catch {
+    wrap.textContent = "No se pudo cargar la lista de usuarios. Inicia sesión nuevamente.";
   }
 }
 
@@ -121,10 +167,24 @@ function bindStatsButton() {
   });
 }
 
+function bindUsersButton() {
+  document.getElementById("users-btn").addEventListener("click", () => {
+    document.getElementById("welcome-screen").classList.add("hidden");
+    document.getElementById("qr-screen").classList.add("hidden");
+    document.getElementById("stats-screen").classList.remove("hidden");
+    loadUsers();
+  });
+}
+
 function bindNavigation() {
   document.getElementById("back-to-admin-btn").addEventListener("click", showAdminHome);
   document.getElementById("back-to-admin-from-stats-btn").addEventListener("click", showAdminHome);
-  document.getElementById("refresh-stats-btn").addEventListener("click", loadStats);
+  document.getElementById("refresh-stats-btn").addEventListener("click", () => {
+    const statsVisible = !document.getElementById("stats-screen").classList.contains("hidden");
+    if (statsVisible) {
+      loadStats();
+    }
+  });
   document.getElementById("logout-btn").addEventListener("click", () => {
     sessionStorage.removeItem(TOKEN_KEY);
     document.getElementById("admin-login-form").reset();
@@ -138,5 +198,6 @@ if (getToken()) {
   showLoginScreen();
   bindAdminLogin();
 }
+bindUsersButton();
 bindStatsButton();
 bindNavigation();
