@@ -139,35 +139,6 @@ app.post("/api/login", async (req, res) => {
   res.json({ token: issueToken(username) });
 });
 
-// Protegido: lista de usuarios con QR y total de escaneos.
-app.get("/api/admin/usuarios", requireAdmin, async (_req, res) => {
-  try {
-    const pool = await getPool();
-    const result = await pool.request().query(`
-      SELECT
-        u.Id,
-        u.Nombre,
-        u.Apellido,
-        u.Ciudad,
-        r.Nombre AS Rol,
-        q.Codigo,
-        q.Ciudad AS CiudadQR,
-        COUNT(e.Id) AS TotalEscaneos
-      FROM dbo.Usuarios u
-      INNER JOIN dbo.Roles r ON r.Id = u.RolId
-      LEFT JOIN dbo.QRs q ON q.UsuarioId = u.Id
-      LEFT JOIN dbo.Escaneos e ON e.QRId = q.Id
-      GROUP BY u.Id, u.Nombre, u.Apellido, u.Ciudad, r.Nombre, q.Codigo, q.Ciudad
-      ORDER BY u.Nombre, u.Apellido
-    `);
-
-    res.json(result.recordset);
-  } catch (err) {
-    console.error("admin usuarios error", err);
-    res.status(500).json({ error: "No se pudo consultar usuarios" });
-  }
-});
-
 // Protegido: historial de cambios.
 app.get("/api/admin/auditoria", requireAdmin, async (_req, res) => {
   try {
