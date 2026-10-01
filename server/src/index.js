@@ -117,7 +117,10 @@ app.get("/api/admin/usuarios", requireAdmin, async (_req, res) => {
     res.json(result.recordset);
   } catch (err) {
     console.error("admin usuarios error", err);
-    res.status(500).json({ error: "No se pudo consultar usuarios" });
+    res.status(500).json({
+      error: "No se pudo consultar usuarios",
+      code: err.code || "SQL_UNKNOWN"
+    });
   }
 });
 
@@ -159,7 +162,10 @@ app.get("/api/admin/auditoria", requireAdmin, async (_req, res) => {
     res.json(result.recordset);
   } catch (err) {
     console.error("admin auditoria error", err);
-    res.status(500).json({ error: "No se pudo consultar auditoria" });
+    res.status(500).json({
+      error: "No se pudo consultar auditoria",
+      code: err.code || "SQL_UNKNOWN"
+    });
   }
 });
 
@@ -185,7 +191,10 @@ app.get("/api/stats", requireAdmin, async (_req, res) => {
     res.json(result.recordset);
   } catch (err) {
     console.error("stats error", err);
-    res.status(500).json({ error: "No se pudo consultar" });
+    res.status(500).json({
+      error: "No se pudo consultar",
+      code: err.code || "SQL_UNKNOWN"
+    });
   }
 });
 

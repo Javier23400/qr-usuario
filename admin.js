@@ -129,7 +129,8 @@ async function loadStats() {
 
     if (!response.ok) {
       const detail = await response.json().catch(() => ({}));
-      throw new Error(detail.error || `Error HTTP ${response.status}`);
+      const message = detail.error || `Error HTTP ${response.status}`;
+      throw new Error(detail.code ? `${message} (${detail.code})` : message);
     }
 
     const rows = await response.json();
@@ -150,7 +151,8 @@ async function loadUsers() {
 
     if (!response.ok) {
       const detail = await response.json().catch(() => ({}));
-      throw new Error(detail.error || `Error HTTP ${response.status}`);
+      const message = detail.error || `Error HTTP ${response.status}`;
+      throw new Error(detail.code ? `${message} (${detail.code})` : message);
     }
 
     const rows = await response.json();
