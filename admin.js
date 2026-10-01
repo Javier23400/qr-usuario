@@ -128,13 +128,14 @@ async function loadStats() {
     });
 
     if (!response.ok) {
-      throw new Error("No autorizado");
+      const detail = await response.json().catch(() => ({}));
+      throw new Error(detail.error || `Error HTTP ${response.status}`);
     }
 
     const rows = await response.json();
     renderStatsTable(wrap, rows);
-  } catch {
-    wrap.textContent = "No se pudo cargar la información. Inicia sesión nuevamente.";
+  } catch (error) {
+    wrap.textContent = `No se pudo cargar la información: ${error.message}`;
   }
 }
 
@@ -148,13 +149,14 @@ async function loadUsers() {
     });
 
     if (!response.ok) {
-      throw new Error("No autorizado");
+      const detail = await response.json().catch(() => ({}));
+      throw new Error(detail.error || `Error HTTP ${response.status}`);
     }
 
     const rows = await response.json();
     renderUsersTable(wrap, rows);
-  } catch {
-    wrap.textContent = "No se pudo cargar la lista de usuarios. Inicia sesión nuevamente.";
+  } catch (error) {
+    wrap.textContent = `No se pudo cargar la lista de usuarios: ${error.message}`;
   }
 }
 
