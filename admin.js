@@ -174,9 +174,8 @@ function bindStatsButton() {
 function bindUsersButton() {
   document.getElementById("users-btn").addEventListener("click", () => {
     document.getElementById("welcome-screen").classList.add("hidden");
-    document.getElementById("qr-screen").classList.add("hidden");
-    document.getElementById("stats-screen").classList.remove("hidden");
-    loadUsers();
+    document.getElementById("qr-screen").classList.remove("hidden");
+    document.getElementById("stats-screen").classList.add("hidden");
   });
 }
 
