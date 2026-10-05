@@ -1,3 +1,4 @@
+// Forzar nuevo despliegue GitHub Pages
 const ADMIN_BACKEND_URL = "https://qr-usuario.onrender.com";
 const TOKEN_KEY = "avis_admin_token";
 
