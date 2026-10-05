@@ -214,6 +214,10 @@ function buildFeaturedQr() {
 function bindWelcomeFlow() {
   const acceptBtn = document.getElementById("accept-btn");
 
+  if (!acceptBtn) {
+    return;
+  }
+
   acceptBtn.addEventListener("click", () => {
     document.getElementById("welcome-screen").classList.add("hidden");
     document.getElementById("qr-screen").classList.remove("hidden");
