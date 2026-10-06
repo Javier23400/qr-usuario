@@ -15,6 +15,13 @@ function getToken() {
   return getSession()?.token || "";
 }
 
+function setLoading(isLoading, message = "Cargando...") {
+  const overlay = document.getElementById("loading-overlay");
+  const label = document.getElementById("loading-message");
+  label.textContent = message;
+  overlay.classList.toggle("hidden", !isLoading);
+}
+
 function hideAllScreens() {
   ["admin-login-screen", "welcome-screen", "qr-screen", "stats-screen", "change-password-screen", "employee-qr-screen"]
     .forEach((id) => document.getElementById(id).classList.add("hidden"));
@@ -46,6 +53,9 @@ function bindAdminLogin() {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     errorEl.classList.add("hidden");
+    const submitButton = form.querySelector("button[type=submit]");
+    submitButton.disabled = true;
+    setLoading(true, "Verificando acceso...");
 
     try {
       const response = await fetch(`${ADMIN_BACKEND_URL}/api/login`, {
@@ -73,6 +83,9 @@ function bindAdminLogin() {
       }
     } catch {
       errorEl.classList.remove("hidden");
+    } finally {
+      submitButton.disabled = false;
+      setLoading(false);
     }
   });
 }
@@ -123,6 +136,7 @@ function renderStatsTable(rows) {
 async function loadStats(attempt = 1) {
   const wrap = document.getElementById("stats-table-wrap");
   wrap.textContent = attempt === 1 ? "Cargando..." : "Conectando con el servidor...";
+  setLoading(true, attempt === 1 ? "Cargando estadísticas..." : "Conectando con el servidor...");
 
   try {
     const month = document.getElementById("stats-month").value;
@@ -147,6 +161,8 @@ async function loadStats(attempt = 1) {
       ? "El servidor de estadísticas no está disponible. Pulsa Actualizar datos en unos segundos."
       : error.message;
     wrap.textContent = `No se pudo cargar la información: ${message}`;
+  } finally {
+    setLoading(false);
   }
 }
 
@@ -263,8 +279,10 @@ function bindPasswordChange() {
 
 function bindNavigation() {
   document.getElementById("users-btn").addEventListener("click", () => {
+    setLoading(true, "Cargando usuarios...");
     hideAllScreens();
     document.getElementById("qr-screen").classList.remove("hidden");
+    requestAnimationFrame(() => setLoading(false));
   });
 
   document.getElementById("stats-btn").addEventListener("click", () => {

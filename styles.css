@@ -89,6 +89,14 @@ body {
   color: #df262d;
 }
 
+.welcome-card h1 .brand-avis {
+  color: #df262d;
+}
+
+.welcome-card h1 .brand-budget {
+  color: #1d4baa;
+}
+
 .welcome-title {
   margin: 34px 0 0;
   font-family: "Archivo", sans-serif;
@@ -287,6 +295,33 @@ body {
   color: #1a3fbf;
 }
 
+.loading-overlay {
+  position: absolute;
+  z-index: 10;
+  top: 16px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 14px;
+  color: #ffffff;
+  background: rgba(23, 45, 117, 0.96);
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(19, 37, 95, 0.26);
+  font: 700 0.9rem "Archivo", sans-serif;
+  transform: translateX(-50%);
+}
+
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.34);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
 .qr-screen {
   flex: 1;
   min-height: 0;
@@ -469,6 +504,12 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

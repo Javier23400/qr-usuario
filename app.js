@@ -271,6 +271,8 @@ function showLandingScreen(scanContext) {
   landingScreen.classList.remove("hidden");
 
   openBtn.addEventListener("click", () => {
+    openBtn.disabled = true;
+    openBtn.textContent = "Abriendo...";
     const params = new URLSearchParams({
       codigo: scanContext.codigo,
       nombre: scanContext.nombre,
