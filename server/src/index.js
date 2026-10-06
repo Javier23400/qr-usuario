@@ -169,7 +169,7 @@ app.get("/api/admin/auditoria", requireAdmin, async (_req, res) => {
   }
 });
 
-// Protegido: resumen de aperturas por usuario y fecha.
+// Protegido: resumen de aperturas por usuario, incluyendo QR sin escaneos.
 app.get("/api/stats", requireAdmin, async (_req, res) => {
   try {
     const pool = await getPool();
@@ -179,13 +179,12 @@ app.get("/api/stats", requireAdmin, async (_req, res) => {
         u.Apellido,
         u.Ciudad,
         q.Codigo,
-        CAST(e.FechaEscaneo AS DATE) AS Dia,
-        COUNT(*) AS Aperturas
-      FROM dbo.Escaneos e
-      INNER JOIN dbo.QRs q ON q.Id = e.QRId
-      INNER JOIN dbo.Usuarios u ON u.Id = q.UsuarioId
-      GROUP BY u.Nombre, u.Apellido, u.Ciudad, q.Codigo, CAST(e.FechaEscaneo AS DATE)
-      ORDER BY Dia DESC, Aperturas DESC
+        COUNT(e.Id) AS Aperturas
+      FROM dbo.Usuarios u
+      INNER JOIN dbo.QRs q ON q.UsuarioId = u.Id
+      LEFT JOIN dbo.Escaneos e ON e.QRId = q.Id
+      GROUP BY u.Nombre, u.Apellido, u.Ciudad, q.Codigo
+      ORDER BY Aperturas DESC, u.Nombre, u.Apellido
     `);
 
     res.json(result.recordset);

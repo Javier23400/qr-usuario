@@ -67,7 +67,7 @@ function renderStatsTable(rows) {
 
   const table = document.createElement("table");
   table.className = "stats-table";
-  const headers = ["Fecha", "Nombre", "Ciudad", "Código", "Aperturas"];
+  const headers = ["Nombre", "Ciudad", "Código", "Aperturas"];
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
 
@@ -81,7 +81,6 @@ function renderStatsTable(rows) {
   const tbody = document.createElement("tbody");
   rows.forEach((row) => {
     const values = [
-      row.Dia || row.Fecha || "-",
       row.Nombre || "-",
       row.Ciudad || "-",
       row.Codigo || "-",
