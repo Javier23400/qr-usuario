@@ -14,7 +14,7 @@
     <section class="welcome" id="admin-login-screen">
       <div class="welcome-card">
         <h1><span>Avis</span> Budget</h1>
-        <p class="welcome-title">Acceso administrador</p>
+        <p class="welcome-title">Acceso al panel</p>
         <p class="welcome-sub">Ingresa tus credenciales para continuar</p>
 
         <form id="admin-login-form" class="admin-login-form">
@@ -56,12 +56,37 @@
         <h2>Aperturas de QR por usuario</h2>
         <p class="subtitle">Cada apertura del enlace personalizado queda registrada con fecha.</p>
         <div class="hero-actions">
+          <input id="stats-month" class="month-input" type="month" aria-label="Filtrar estadísticas por mes">
           <button id="refresh-stats-btn" class="secondary-btn hero-action" type="button">Actualizar datos</button>
           <button id="back-to-admin-from-stats-btn" class="secondary-btn hero-action" type="button">Volver al inicio</button>
         </div>
       </header>
 
       <div id="stats-table-wrap" class="stats-table-wrap"></div>
+    </section>
+
+    <section id="change-password-screen" class="welcome hidden">
+      <div class="welcome-card">
+        <h1 class="landing-logo-text"><span class="brand-avis">Avis</span><span class="brand-budget">Budget</span></h1>
+        <p class="welcome-title">Cambia tu contraseña</p>
+        <p class="welcome-sub">Por seguridad, crea una clave personal antes de ver tu QR.</p>
+        <form id="change-password-form" class="admin-login-form">
+          <input id="new-password" class="admin-input" type="password" minlength="10" placeholder="Nueva contraseña" autocomplete="new-password" required>
+          <input id="confirm-password" class="admin-input" type="password" minlength="10" placeholder="Confirmar contraseña" autocomplete="new-password" required>
+          <p id="change-password-error" class="admin-login-error hidden"></p>
+          <button type="submit" class="cta-btn">Guardar contraseña</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="employee-qr-screen" class="qr-screen hidden" aria-live="polite">
+      <header class="hero">
+        <p class="eyebrow">Mi código personal</p>
+        <h2 id="employee-name">Cargando...</h2>
+        <p class="subtitle">Este es tu QR asignado.</p>
+        <button id="employee-logout-btn" class="secondary-btn hero-action" type="button">Cerrar sesión</button>
+      </header>
+      <div id="employee-qr-card" class="employee-qr-card"></div>
     </section>
   </main>
 

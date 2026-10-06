@@ -147,6 +147,20 @@ body {
   color: #1c2550;
 }
 
+.month-input {
+  min-height: 44px;
+  border: 1px solid #39478c;
+  border-radius: 8px;
+  padding: 10px;
+  font: 700 0.9rem "Archivo", sans-serif;
+  color: #1c2550;
+}
+
+.employee-qr-card {
+  width: min(400px, 100%);
+  margin: 16px auto 0;
+}
+
 .stats-table-wrap {
   margin-top: 16px;
   overflow-x: auto;

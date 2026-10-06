@@ -1,21 +1,56 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getPool, sql } from "./db.js";
 
 const TOKEN_TTL = "8h";
 
-export async function verifyAdminCredentials(username, password) {
+export async function verifyCredentials(username, password) {
   if (username !== process.env.ADMIN_USER) {
-    return false;
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("username", sql.NVarChar(100), String(username).trim().toLowerCase())
+      .query(`SELECT TOP 1
+                c.UsuarioId,
+                c.NombreUsuario,
+                c.PasswordHash,
+                c.DebeCambiarClave,
+                u.Nombre,
+                u.Apellido
+              FROM dbo.CredencialesUsuarios c
+              INNER JOIN dbo.Usuarios u ON u.Id = c.UsuarioId
+              WHERE c.NombreUsuario = @username AND c.Activo = 1`);
+
+    const collaborator = result.recordset[0];
+    if (!collaborator || !await bcrypt.compare(password, collaborator.PasswordHash)) {
+      return null;
+    }
+
+    await pool.request()
+      .input("userId", sql.Int, collaborator.UsuarioId)
+      .query("UPDATE dbo.CredencialesUsuarios SET UltimoAcceso = SYSUTCDATETIME() WHERE UsuarioId = @userId");
+
+    return {
+      role: "collaborator",
+      username: collaborator.NombreUsuario,
+      userId: collaborator.UsuarioId,
+      name: `${collaborator.Nombre} ${collaborator.Apellido || ""}`.trim(),
+      mustChangePassword: collaborator.DebeCambiarClave
+    };
   }
-  // ADMIN_PASSWORD_HASH se genera con "npm run hash-password", nunca se guarda en texto plano.
-  return bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH || "");
+
+  const isAdmin = await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH || "");
+  return isAdmin ? { role: "admin", username } : null;
 }
 
-export function issueToken(username) {
-  return jwt.sign({ sub: username, role: "admin" }, process.env.JWT_SECRET, { expiresIn: TOKEN_TTL });
+export function issueToken(session) {
+  return jwt.sign({
+    sub: session.username,
+    role: session.role,
+    userId: session.userId || null
+  }, process.env.JWT_SECRET, { expiresIn: TOKEN_TTL });
 }
 
-export function requireAdmin(req, res, next) {
+export function requireAuthenticated(req, res, next) {
   const header = req.headers.authorization || "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
   if (!token) {
@@ -23,9 +58,18 @@ export function requireAdmin(req, res, next) {
   }
 
   try {
-    req.admin = jwt.verify(token, process.env.JWT_SECRET);
+    req.auth = jwt.verify(token, process.env.JWT_SECRET);
     next();
   } catch {
     res.status(401).json({ error: "Token invalido o expirado" });
   }
+}
+
+export function requireAdmin(req, res, next) {
+  requireAuthenticated(req, res, () => {
+    if (req.auth.role !== "admin") {
+      return res.status(403).json({ error: "Acceso restringido" });
+    }
+    next();
+  });
 }

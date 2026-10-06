@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { getPool, sql } from "./db.js";
-import { verifyAdminCredentials, issueToken, requireAdmin } from "./auth.js";
+import { verifyCredentials, issueToken, requireAdmin, requireAuthenticated } from "./auth.js";
 
 const VALID_CITIES = new Set(["QUITO", "GUAYAQUI", "MANTA", "CUENCA"]);
 
@@ -140,12 +140,68 @@ app.post("/api/login", async (req, res) => {
     return res.status(400).json({ error: "Usuario y contrasena requeridos" });
   }
 
-  const ok = await verifyAdminCredentials(username, password);
-  if (!ok) {
+  const session = await verifyCredentials(username, password);
+  if (!session) {
     return res.status(401).json({ error: "Credenciales invalidas" });
   }
 
-  res.json({ token: issueToken(username) });
+  res.json({ token: issueToken(session), session });
+});
+
+// Protegido: un colaborador solo puede consultar su propio QR.
+app.get("/api/mi-qr", requireAuthenticated, async (req, res) => {
+  if (req.auth.role !== "collaborator") {
+    return res.status(403).json({ error: "Esta vista es solo para colaboradores" });
+  }
+
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("userId", sql.Int, req.auth.userId)
+      .query(`SELECT TOP 1 u.Nombre, u.Apellido, u.Ciudad, q.Codigo
+              FROM dbo.Usuarios u
+              INNER JOIN dbo.QRs q ON q.UsuarioId = u.Id
+              WHERE u.Id = @userId`);
+    const qr = result.recordset[0];
+    if (!qr) {
+      return res.status(404).json({ error: "No existe un QR asignado" });
+    }
+    res.json(qr);
+  } catch (err) {
+    console.error("mi qr error", err);
+    res.status(500).json({ error: "No se pudo consultar el QR" });
+  }
+});
+
+// Protegido: sustituye la clave temporal en el primer acceso.
+app.post("/api/mi-clave", requireAuthenticated, async (req, res) => {
+  if (req.auth.role !== "collaborator") {
+    return res.status(403).json({ error: "Esta acción es solo para colaboradores" });
+  }
+
+  const { password } = req.body || {};
+  const hasRequiredCharacters = typeof password === "string"
+    && /[a-z]/.test(password)
+    && /[A-Z]/.test(password)
+    && /\d/.test(password);
+  if (typeof password !== "string" || password.length < 10 || !hasRequiredCharacters || password.toLowerCase() === "password") {
+    return res.status(400).json({ error: "Usa al menos 10 caracteres, mayúscula, minúscula y número" });
+  }
+
+  try {
+    const hash = await (await import("bcryptjs")).default.hash(password, 12);
+    const pool = await getPool();
+    await pool.request()
+      .input("userId", sql.Int, req.auth.userId)
+      .input("hash", sql.NVarChar(255), hash)
+      .query(`UPDATE dbo.CredencialesUsuarios
+              SET PasswordHash = @hash, DebeCambiarClave = 0
+              WHERE UsuarioId = @userId`);
+    res.status(204).end();
+  } catch (err) {
+    console.error("mi clave error", err);
+    res.status(500).json({ error: "No se pudo actualizar la contraseña" });
+  }
 });
 
 // Protegido: historial de cambios.
@@ -176,10 +232,20 @@ app.get("/api/admin/auditoria", requireAdmin, async (_req, res) => {
 });
 
 // Protegido: resumen de aperturas por usuario, incluyendo QR sin escaneos.
-app.get("/api/stats", requireAdmin, async (_req, res) => {
+app.get("/api/stats", requireAdmin, async (req, res) => {
+  const month = String(req.query.month || "");
+  if (month && !/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+    return res.status(400).json({ error: "Mes inválido" });
+  }
+
   try {
     const pool = await getPool();
-    const result = await pool.request().query(`
+    const request = pool.request();
+    if (month) {
+      request.input("startDate", sql.DateTime2, new Date(`${month}-01T00:00:00.000Z`));
+      request.input("endDate", sql.DateTime2, new Date(`${month}-01T00:00:00.000Z`));
+    }
+    const result = await request.query(`
       SELECT
         u.Nombre,
         u.Apellido,
@@ -189,6 +255,7 @@ app.get("/api/stats", requireAdmin, async (_req, res) => {
       FROM dbo.Usuarios u
       INNER JOIN dbo.QRs q ON q.UsuarioId = u.Id
       LEFT JOIN dbo.Escaneos e ON e.QRId = q.Id
+        ${month ? "AND e.FechaEscaneo >= @startDate AND e.FechaEscaneo < DATEADD(MONTH, 1, @endDate)" : ""}
       GROUP BY u.Nombre, u.Apellido, u.Ciudad, q.Codigo
       ORDER BY Aperturas DESC, u.Nombre, u.Apellido
     `);
