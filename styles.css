@@ -1,17 +1,17 @@
 :root {
-  --bg: #f2f3f7;
-  --bg-deep: #dce0ec;
+  --bg: #edf1f7;
+  --bg-deep: #d6deec;
   --surface: #ffffff;
-  --surface-soft: #f8f9fd;
-  --text: #12151f;
-  --muted: #4f576c;
-  --brand: #0f1f5f;
-  --brand-2: #2c3f8d;
-  --action: #d5c9ff;
-  --action-border: #58458f;
-  --ring: #95a7ff;
-  --border: #d5d9e8;
-  --shadow: 0 12px 34px rgba(23, 31, 72, 0.14);
+  --surface-soft: #f5f7fb;
+  --text: #18233c;
+  --muted: #5f6b83;
+  --brand: #172d75;
+  --brand-2: #2451ad;
+  --action: #e6292c;
+  --action-border: #b51b25;
+  --ring: #8fa9e8;
+  --border: #d7deeb;
+  --shadow: 0 20px 44px rgba(24, 44, 89, 0.16);
 }
 
 * {
@@ -31,8 +31,7 @@ body {
   font-family: "Space Grotesk", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at 14% 8%, #ffffff 0%, transparent 36%),
-    radial-gradient(circle at 86% 12%, #e4ebff 0%, transparent 40%),
+    linear-gradient(135deg, #eef3fb 0%, #e1e8f5 100%),
     var(--bg);
   position: relative;
 }
@@ -63,54 +62,63 @@ body {
   width: min(380px, 100%);
   height: min(80dvh, 100%);
   overflow-y: auto;
-  border: 2px solid #bfc7dc;
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.88) 100%), url("pantilla_avis.png");
+  border: 1px solid #cdd8ec;
+  background-image: linear-gradient(180deg, rgba(250, 252, 255, 0.92) 0%, rgba(245, 248, 253, 0.82) 100%), url("pantilla_avis.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: var(--shadow);
-  border-radius: 2px;
-  padding: 26px 18px;
+  border-radius: 12px;
+  padding: 30px 24px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .welcome-card h1 {
   margin: 0;
   text-align: center;
   font-family: "Archivo", sans-serif;
-  font-size: clamp(2rem, 9vw, 2.8rem);
+  font-size: clamp(2.25rem, 9vw, 3rem);
   line-height: 1.05;
-  color: #000000;
+  color: #1d4baa;
+  letter-spacing: 0;
 }
 
 .welcome-card h1 span {
-  display: block;
+  color: #df262d;
 }
 
 .welcome-title {
-  margin: 20px 0 0;
+  margin: 34px 0 0;
   font-family: "Archivo", sans-serif;
   font-size: clamp(1.35rem, 6.2vw, 1.85rem);
   line-height: 1.15;
   font-weight: 800;
-  color: #000000;
+  color: var(--brand);
 }
 
 .admin-login-form {
   display: grid;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: auto;
 }
 
 .admin-input {
-  border: 1px solid #bfc7dc;
+  border: 1px solid #b9c7df;
   border-radius: 8px;
-  padding: 12px;
+  padding: 13px 14px;
   font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
-  min-height: 44px;
+  min-height: 48px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.96);
+  outline: none;
+}
+
+.admin-input:focus {
+  border-color: #2353ad;
+  box-shadow: 0 0 0 3px rgba(35, 83, 173, 0.16);
 }
 
 .admin-login-error {
@@ -127,7 +135,7 @@ body {
 
 .admin-home-card {
   justify-content: center;
-  gap: 24px;
+  gap: 28px;
 }
 
 .admin-home-card .welcome-title {
@@ -192,11 +200,11 @@ body {
 }
 
 .welcome-sub {
-  margin: 16px 0 auto;
-  font-size: clamp(1.02rem, 4.5vw, 1.25rem);
+  margin: 12px 0 0;
+  font-size: 1rem;
   line-height: 1.28;
-  font-weight: 700;
-  color: #000000;
+  font-weight: 500;
+  color: var(--muted);
 }
 
 .featured-qr {
@@ -218,15 +226,15 @@ body {
 
 .secondary-btn {
   appearance: none;
-  border: 1px solid #39478c;
+  border: 1px solid #aebddd;
   border-radius: 8px;
-  background: #ffffff;
-  color: #1c2550;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--brand);
   font-family: "Archivo", sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
-  min-height: 44px;
-  padding: 12px;
+  min-height: 48px;
+  padding: 12px 16px;
   cursor: pointer;
   touch-action: manipulation;
 }
@@ -237,24 +245,24 @@ body {
 
 .cta-btn {
   appearance: none;
-  border: 2px solid var(--action-border);
-  border-radius: 0;
+  border: 1px solid var(--action-border);
+  border-radius: 8px;
   background: var(--action);
-  color: #101010;
+  color: #ffffff;
   font-family: "Archivo", sans-serif;
-  font-size: clamp(2rem, 8vw, 2.4rem);
+  font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: 0.02em;
-  min-height: 44px;
-  padding: 14px 10px;
+  min-height: 50px;
+  padding: 14px 18px;
   cursor: pointer;
   touch-action: manipulation;
-  box-shadow: 5px 5px 0 rgba(39, 34, 70, 0.25);
+  box-shadow: 0 8px 16px rgba(186, 27, 37, 0.24);
 }
 
 .cta-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 3px 3px 0 rgba(39, 34, 70, 0.25);
+  transform: translateY(1px);
+  box-shadow: 0 4px 10px rgba(186, 27, 37, 0.2);
 }
 
 .landing-card {
@@ -267,7 +275,7 @@ body {
 .landing-logo-text {
   margin: 0;
   font-family: "Archivo", sans-serif;
-  font-size: clamp(2rem, 9vw, 2.8rem);
+  font-size: clamp(2.25rem, 9vw, 3rem);
   line-height: 1.05;
 }
 
@@ -288,10 +296,10 @@ body {
 }
 
 .hero {
-  background: linear-gradient(145deg, var(--brand) 0%, var(--brand-2) 100%);
+  background: linear-gradient(135deg, #172d75 0%, #254eaa 100%);
   color: #ffffff;
-  border-radius: 18px;
-  padding: 18px 15px;
+  border-radius: 12px;
+  padding: 22px 20px;
   box-shadow: var(--shadow);
 }
 
@@ -326,7 +334,7 @@ body {
 .city {
   background: var(--surface-soft);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 10px;
   box-shadow: var(--shadow);
   padding: 14px;
   animation: slideFade 0.45s ease both;
@@ -349,7 +357,7 @@ body {
 .person {
   background: var(--surface);
   border: 1px solid #e0e4f0;
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 12px;
   display: grid;
   gap: 9px;
@@ -420,11 +428,25 @@ body {
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    padding: max(28px, env(safe-area-inset-top)) 28px max(28px, env(safe-area-inset-bottom));
+    padding: max(44px, env(safe-area-inset-top)) 28px max(34px, env(safe-area-inset-bottom));
+    background-position: center;
   }
 
   .admin-home-card {
     gap: 28px;
+  }
+
+  .welcome-card h1 {
+    font-size: 2.7rem;
+  }
+
+  .welcome-title {
+    margin-top: 36px;
+    font-size: 1.55rem;
+  }
+
+  .admin-login-form {
+    margin-top: auto;
   }
 }
 
