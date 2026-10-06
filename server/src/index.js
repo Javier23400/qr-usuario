@@ -78,6 +78,12 @@ app.post("/api/track", async (req, res) => {
       return res.status(404).json({ error: "QR no encontrado" });
     }
 
+    const qrOwner = `${qr.Nombre || ""} ${qr.Apellido || ""}`.trim().toUpperCase();
+    const scannedName = String(nombre).trim().toUpperCase();
+    if (qrOwner !== scannedName || qr.Ciudad !== ciudadUpper) {
+      return res.status(400).json({ error: "El código QR no corresponde al usuario" });
+    }
+
     await pool.request()
       .input("qrId", sql.Int, qr.Id)
       .input("userAgent", sql.NVarChar(500), String(req.get("user-agent") || "").slice(0, 500))

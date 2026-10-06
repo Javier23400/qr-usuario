@@ -21,6 +21,21 @@ const teamByCity = {
   ]
 };
 
+const qrCodeByEmployee = {
+  "DANIEL PALACIOS": "QUIT-001",
+  "WILLIAM VIRACOCHA": "QUIT-002",
+  "LUIS CACUANGO": "QUIT-003",
+  "ALEXANDER RAMIREZ": "QUIT-004",
+  "SANDRA MOROCHO": "QUIT-005",
+  "ANDRES PASQUEL": "QUIT-006",
+  "LUIS GANCHOZO": "GUAY-001",
+  "CARLA BOZADA": "GUAY-002",
+  "MARIELA SILVA": "GUAY-003",
+  "RENE CARREÑO": "MANT-001",
+  "VICTOR DEMERA": "MANT-002",
+  "SERGIO MOROCHO": "CUEN-001"
+};
+
 const reviewUrlByCity = {
   QUITO: "https://search.google.com/local/writereview?placeid=ChIJt0NbCHSQ1ZERR-637wqodcE",
   GUAYAQUI: "https://search.google.com/local/writereview?placeid=ChIJMxmMTw9tLZARRR8xAazdjEQ",
@@ -70,8 +85,11 @@ function getLandingBaseUrl() {
   return `${window.location.origin}${dir}index.html`;
 }
 
-function createPayload(name, city, index) {
-  const personCode = `${normalizeCode(city).slice(0, 4)}-${String(index + 1).padStart(3, "0")}`;
+function createPayload(name, city) {
+  const personCode = qrCodeByEmployee[name];
+  if (!personCode) {
+    throw new Error(`No existe un código QR para ${name}`);
+  }
   const params = new URLSearchParams({
     codigo: personCode,
     nombre: name,
@@ -113,8 +131,8 @@ function buildPage() {
     const peopleGrid = document.createElement("div");
     peopleGrid.className = "people";
 
-    users.forEach((name, index) => {
-      const { personCode, qrValue } = createPayload(name, city, index);
+    users.forEach((name) => {
+      const { personCode, qrValue } = createPayload(name, city);
 
       const card = document.createElement("section");
       card.className = "person";
