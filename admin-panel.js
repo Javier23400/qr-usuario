@@ -1,5 +1,7 @@
 const ADMIN_BACKEND_URL = "https://qr-usuario.onrender.com";
 const TOKEN_KEY = "avis_admin_token";
+const STATS_RETRY_DELAY_MS = 4_000;
+const STATS_MAX_ATTEMPTS = 2;
 
 function getToken() {
   return sessionStorage.getItem(TOKEN_KEY);
@@ -98,14 +100,19 @@ function renderStatsTable(rows) {
   wrap.appendChild(table);
 }
 
-async function loadStats() {
+async function loadStats(attempt = 1) {
   const wrap = document.getElementById("stats-table-wrap");
-  wrap.textContent = "Cargando...";
+  wrap.textContent = attempt === 1 ? "Cargando..." : "Conectando con el servidor...";
 
   try {
     const response = await fetch(`${ADMIN_BACKEND_URL}/api/stats`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     });
+
+    if (response.status === 503 && attempt < STATS_MAX_ATTEMPTS) {
+      setTimeout(() => loadStats(attempt + 1), STATS_RETRY_DELAY_MS);
+      return;
+    }
 
     if (!response.ok) {
       const detail = await response.json().catch(() => ({}));
@@ -114,7 +121,10 @@ async function loadStats() {
 
     renderStatsTable(await response.json());
   } catch (error) {
-    wrap.textContent = `No se pudo cargar la información: ${error.message}`;
+    const message = error instanceof TypeError
+      ? "El servidor de estadísticas no está disponible. Pulsa Actualizar datos en unos segundos."
+      : error.message;
+    wrap.textContent = `No se pudo cargar la información: ${message}`;
   }
 }
 
