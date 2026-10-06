@@ -139,18 +139,18 @@ DECLARE @Credenciales TABLE (
 );
 
 INSERT INTO @Credenciales (Nombre, Apellido, Ciudad, NombreUsuario, PasswordHash) VALUES
-  (N'DANIEL', N'PALACIOS', 'QUITO', N'daniel.palacios', N'$2a$12$M8BL/IFC1t/KiK3YdT7/TOCKYUxfrltK1.1JwuX3GFWFR01BxGXXu'),
-  (N'WILLIAM', N'VIRACOCHA', 'QUITO', N'william.viracocha', N'$2a$12$PasLCE5ATsoGWT11dkQczuaTdRRkYdA0pJAx4GT430TTR0AexCWc.'),
-  (N'LUIS', N'CACUANGO', 'QUITO', N'luis.cacuango', N'$2a$12$SsdREUhKhbpfNHbpCBN4xOsUHE5JjXM/Cli1s6fNGxUli4iGAgqL2'),
-  (N'ALEXANDER', N'RAMIREZ', 'QUITO', N'alexander.ramirez', N'$2a$12$g/W7Mt1RLHqnUNbW3k.YHOzbujZ62oqSB/SCMlUoGMSyrYeX4Yiry'),
-  (N'SANDRA', N'MOROCHO', 'QUITO', N'sandra.morocho', N'$2a$12$Le07B5LAfcANdweDBC1L6Ofq5jO3FMo7Cz8tvKRTsZh318.BJh6EW'),
-  (N'ANDRES', N'PASQUEL', 'QUITO', N'andres.pasquel', N'$2a$12$TI4QBUtyf18sjLKRQ6sT9uf1KlvXQ7e8DqrfpSG4boS.gdiWbvNVq'),
-  (N'LUIS', N'GANCHOZO', 'GUAYAQUI', N'luis.ganchozo', N'$2a$12$MdqtbEgpqDoCVH6w5CsEY.RHS5Joi1zGijhgDcLl0mJMNjke0BiTK'),
-  (N'CARLA', N'BOZADA', 'GUAYAQUI', N'carla.bozada', N'$2a$12$sjU0yQN6W4GHn4YlE7uIbedvjm8wIg9lCUuUNJxxXSYSeOmRrT7uq'),
-  (N'MARIELA', N'SILVA', 'GUAYAQUI', N'mariela.silva', N'$2a$12$qTfCLWfGBT1y/MEE2PJPu.5.Cb5LG/iLpV.LL4O3PH6r3ncmMGuCu'),
-  (N'RENE', N'CARREÑO', 'MANTA', N'rene.carreno', N'$2a$12$yO69DhbxxUl9CEqfw3Vpyet/MHpcnQy.LYXYSmrwazD7tlVZN6Jjy'),
-  (N'VICTOR', N'DEMERA', 'MANTA', N'victor.demera', N'$2a$12$v1d6SQtDEJ7SOyjVDz094eYiBfmsISuqprbbsB5wEcioXgLCvfxiK'),
-  (N'SERGIO', N'MOROCHO', 'CUENCA', N'sergio.morocho', N'$2a$12$Fha8zaMpD3qCmZBg2Lx/G.8nnlMLK.4Hgx26wv6AzImc4TdugLt8W');
+  (N'DANIEL', N'PALACIOS', 'QUITO', N'dpalacios', N'$2a$12$M8BL/IFC1t/KiK3YdT7/TOCKYUxfrltK1.1JwuX3GFWFR01BxGXXu'),
+  (N'WILLIAM', N'VIRACOCHA', 'QUITO', N'wcirocha', N'$2a$12$PasLCE5ATsoGWT11dkQczuaTdRRkYdA0pJAx4GT430TTR0AexCWc.'),
+  (N'LUIS', N'CACUANGO', 'QUITO', N'lcacuango', N'$2a$12$SsdREUhKhbpfNHbpCBN4xOsUHE5JjXM/Cli1s6fNGxUli4iGAgqL2'),
+  (N'ALEXANDER', N'RAMIREZ', 'QUITO', N'aramirez', N'$2a$12$g/W7Mt1RLHqnUNbW3k.YHOzbujZ62oqSB/SCMlUoGMSyrYeX4Yiry'),
+  (N'SANDRA', N'MOROCHO', 'QUITO', N'smorocho', N'$2a$12$Le07B5LAfcANdweDBC1L6Ofq5jO3FMo7Cz8tvKRTsZh318.BJh6EW'),
+  (N'ANDRES', N'PASQUEL', 'QUITO', N'apasquel', N'$2a$12$TI4QBUtyf18sjLKRQ6sT9uf1KlvXQ7e8DqrfpSG4boS.gdiWbvNVq'),
+  (N'LUIS', N'GANCHOZO', 'GUAYAQUI', N'lganchozo', N'$2a$12$MdqtbEgpqDoCVH6w5CsEY.RHS5Joi1zGijhgDcLl0mJMNjke0BiTK'),
+  (N'CARLA', N'BOZADA', 'GUAYAQUI', N'cbozada', N'$2a$12$sjU0yQN6W4GHn4YlE7uIbedvjm8wIg9lCUuUNJxxXSYSeOmRrT7uq'),
+  (N'MARIELA', N'SILVA', 'GUAYAQUI', N'msilva', N'$2a$12$qTfCLWfGBT1y/MEE2PJPu.5.Cb5LG/iLpV.LL4O3PH6r3ncmMGuCu'),
+  (N'RENE', N'CARREÑO', 'MANTA', N'rcarreno', N'$2a$12$yO69DhbxxUl9CEqfw3Vpyet/MHpcnQy.LYXYSmrwazD7tlVZN6Jjy'),
+  (N'VICTOR', N'DEMERA', 'MANTA', N'vdemera', N'$2a$12$v1d6SQtDEJ7SOyjVDz094eYiBfmsISuqprbbsB5wEcioXgLCvfxiK'),
+  (N'SERGIO', N'MOROCHO', 'CUENCA', N'sergiomorocho', N'$2a$12$Fha8zaMpD3qCmZBg2Lx/G.8nnlMLK.4Hgx26wv6AzImc4TdugLt8W');
 
 -- Cada clave inicial es temporal, exclusiva y debe cambiarse al ingresar por primera vez.
 -- Solo se almacena su hash BCrypt, nunca la clave en texto plano.
@@ -164,4 +164,14 @@ INNER JOIN dbo.Usuarios usuario
 WHERE NOT EXISTS (
   SELECT 1 FROM dbo.CredencialesUsuarios credencial WHERE credencial.UsuarioId = usuario.Id
 );
+
+UPDATE credencial
+SET NombreUsuario = fuente.NombreUsuario
+FROM dbo.CredencialesUsuarios credencial
+INNER JOIN dbo.Usuarios usuario ON usuario.Id = credencial.UsuarioId
+INNER JOIN @Credenciales fuente
+  ON fuente.Nombre = usuario.Nombre
+  AND fuente.Apellido = usuario.Apellido
+  AND fuente.Ciudad = usuario.Ciudad
+WHERE credencial.NombreUsuario <> fuente.NombreUsuario;
 GO
